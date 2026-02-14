@@ -15,9 +15,6 @@ export function AppLayout() {
 
       {/* Main Content - Editor */}
       <main className="flex-1 flex flex-col">
-        <div className="h-12 border-b border-gray-200 flex items-center px-6 bg-white">
-          <span className="text-sm text-gray-600">Welcome to Herth</span>
-        </div>
         <MarkdownEditor />
       </main>
 

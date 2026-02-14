@@ -2,6 +2,16 @@
 
 A self-hosted desktop application for Product Managers built with Electron, React, and TypeScript.
 
+## What's New in Phase 2 (Feb 2026) ✨
+
+- 🎨 **WYSIWYG Markdown Editor** - TipTap editor with full formatting support
+- 📁 **File Navigation** - Click to open files from the sidebar
+- 💾 **Auto-Save** - Automatic saving with status indicators
+- ➕ **File Creation** - Create new files and folders on the fly
+- ⌨️ **Keyboard Shortcuts** - CMD+S to save, plus editor shortcuts
+
+[View Full Changelog →](change/phase-2.md)
+
 ## Features
 
 - **Project Management**: Organize projects as folders with standard PM structure
@@ -93,36 +103,61 @@ By default, Herth creates your workspace at:
 
 ## Development Roadmap
 
+**Current Progress:** ~30% complete (2 of 6 phases done)
+
 ### ✅ Phase 1: Project Scaffold (Complete)
+
 - Electron + React + TypeScript setup
 - File management system
 - Project creation with standard folders
 - IPC communication layer
+- 3-panel UI layout
 
-### 🚧 Phase 2: Core Features (Next)
-- TipTap WYSIWYG markdown editor
-- File tree navigation
-- Auto-save functionality
+### ✅ Phase 2: Core Features (Complete)
 
-### 📋 Phase 3: LLM Integration
+- TipTap WYSIWYG markdown editor with formatting toolbar
+- File tree navigation with click-to-open
+- Auto-save functionality (2-second debounce)
+- File and folder creation
+- Keyboard shortcuts (Cmd/Ctrl+S)
+- Markdown round-trip conversion
+- Empty states and loading indicators
+
+### 🚧 Phase 3: LLM Integration (Next Up)
+
 - Pluggable LLM providers (Anthropic, OpenAI, Ollama)
+- Chat interface in AI Assistant panel
+- Context-aware prompts for PM tasks
 - Settings UI for API configuration
+- Streaming responses
 
-### 📋 Phase 4: Organization Agent
+### 📋 Phase 4: Organization Agent (Planned)
+
 - Auto-organize files into correct locations
 - Suggest naming conventions
 - Generate insights from content
+- Detect missing documentation
+- Project structure recommendations
+- Auto-tagging and categorization
 
-### 📋 Phase 5: Context & Templates
+### 📋 Phase 5: Context & Templates (Planned)
+
 - User/company context management
-- Persona definitions
-- PRD templates
+- Persona system
+- Comprehensive template library
+- Custom template creation
+- Context-aware document generation
+- Template variables and placeholders
 
-### 📋 Phase 6: Analysis & Automation
-- PRD analysis and suggestions
-- Integration with Jira/Linear
+### 📋 Phase 6: Analysis & Automation (Planned)
+
+- PRD analysis and feedback system
+- Integration with Jira/Linear/GitHub
 - Meeting transcript processing
 - Marketing material generation
+- Roadmap visualization
+- Full-text search and insights
+- Workflow automation engine
 
 ## Tech Stack
 

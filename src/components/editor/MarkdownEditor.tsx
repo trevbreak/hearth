@@ -3,22 +3,27 @@ import { FileText } from 'lucide-react';
 import { useFileStore } from '@/stores/fileStore';
 import { TipTapEditor } from './TipTapEditor';
 import { SaveStatus } from './SaveStatus';
-import { saveMarkdownFile } from '@/lib/markdown';
+import { saveMarkdownFile, htmlToMarkdown } from '@/lib/markdown';
 import { useAutoSave } from '@/hooks/useAutoSave';
+
+type ViewMode = 'wysiwyg' | 'markdown';
 
 export function MarkdownEditor() {
   const { currentFile, isFileLoading, currentProject, saveFile } = useFileStore();
   const [editorContent, setEditorContent] = useState('');
   const [hasChanges, setHasChanges] = useState(false);
+  const [viewMode, setViewMode] = useState<ViewMode>('wysiwyg');
 
   // Load file content into editor when currentFile changes
   useEffect(() => {
     if (currentFile) {
       setEditorContent(currentFile.content);
       setHasChanges(false);
+      setViewMode('wysiwyg'); // Reset to WYSIWYG when opening a new file
     } else {
       setEditorContent('');
       setHasChanges(false);
+      setViewMode('wysiwyg');
     }
   }, [currentFile]);
 
@@ -41,12 +46,21 @@ export function MarkdownEditor() {
     },
   });
 
-  // Manual save with Cmd/Ctrl+S
+  // Toggle view mode function
+  const toggleViewMode = () => {
+    setViewMode((mode) => (mode === 'wysiwyg' ? 'markdown' : 'wysiwyg'));
+  };
+
+  // Manual save with Cmd/Ctrl+S and view toggle with Cmd/Ctrl+Shift+M
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 's') {
         e.preventDefault();
         forceSave();
+      }
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'M') {
+        e.preventDefault();
+        toggleViewMode();
       }
     };
 
@@ -96,6 +110,9 @@ export function MarkdownEditor() {
     );
   }
 
+  // Convert HTML to markdown for raw view
+  const markdownContent = editorContent ? htmlToMarkdown(editorContent) : '';
+
   // Editor view
   return (
     <div className="flex-1 flex flex-col bg-white">
@@ -114,10 +131,33 @@ export function MarkdownEditor() {
       </div>
 
       {/* Editor */}
-      <TipTapEditor
-        content={editorContent}
-        onChange={handleContentChange}
-      />
+      {viewMode === 'wysiwyg' ? (
+        <TipTapEditor
+          content={editorContent}
+          onChange={handleContentChange}
+          onToggleViewMode={toggleViewMode}
+        />
+      ) : (
+        <div className="flex-1 flex flex-col">
+          {/* Markdown view toolbar placeholder */}
+          <div className="border-b border-gray-200 bg-white p-2 flex items-center gap-2">
+            <button
+              onClick={toggleViewMode}
+              className="px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded border border-gray-300"
+              title="Switch to WYSIWYG mode (Cmd+Shift+M)"
+            >
+              Switch to WYSIWYG
+            </button>
+            <span className="text-xs text-gray-500">Raw Markdown (Read-only)</span>
+          </div>
+          {/* Raw markdown view */}
+          <div className="flex-1 overflow-y-auto">
+            <pre className="p-8 font-mono text-sm text-gray-800 whitespace-pre-wrap">
+              {markdownContent}
+            </pre>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

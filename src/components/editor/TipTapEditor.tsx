@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -15,9 +16,13 @@ interface TipTapEditorProps {
   content: string;
   onChange: (content: string) => void;
   editable?: boolean;
+  onToggleViewMode?: () => void;
 }
 
-export function TipTapEditor({ content, onChange, editable = true }: TipTapEditorProps) {
+export function TipTapEditor({ content, onChange, editable = true, onToggleViewMode }: TipTapEditorProps) {
+  const isUpdatingRef = useRef(false);
+  const previousContentRef = useRef(content);
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -47,8 +52,10 @@ export function TipTapEditor({ content, onChange, editable = true }: TipTapEdito
     content,
     editable,
     onUpdate: ({ editor }) => {
-      const html = editor.getHTML();
-      onChange(html);
+      if (!isUpdatingRef.current) {
+        const html = editor.getHTML();
+        onChange(html);
+      }
     },
     editorProps: {
       attributes: {
@@ -57,14 +64,23 @@ export function TipTapEditor({ content, onChange, editable = true }: TipTapEdito
     },
   });
 
-  // Update content when it changes externally
-  if (editor && content !== editor.getHTML()) {
-    editor.commands.setContent(content);
-  }
+  // Update content when it changes externally (e.g., switching files)
+  // but NOT during user edits
+  useEffect(() => {
+    if (!editor) return;
+
+    // Only update if content actually changed from external source
+    if (content !== previousContentRef.current && content !== editor.getHTML()) {
+      isUpdatingRef.current = true;
+      editor.commands.setContent(content);
+      previousContentRef.current = content;
+      isUpdatingRef.current = false;
+    }
+  }, [content, editor]);
 
   return (
     <div className="flex flex-col h-full bg-white">
-      <EditorToolbar editor={editor} />
+      <EditorToolbar editor={editor} onToggleViewMode={onToggleViewMode} />
       <div className="flex-1 overflow-y-auto">
         <EditorContent editor={editor} />
       </div>

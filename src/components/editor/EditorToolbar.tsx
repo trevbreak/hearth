@@ -13,10 +13,12 @@ import {
   Link as LinkIcon,
   Table,
   Code2,
+  FileText,
 } from 'lucide-react';
 
 interface EditorToolbarProps {
   editor: Editor | null;
+  onToggleViewMode?: () => void;
 }
 
 interface ToolbarButtonProps {
@@ -47,7 +49,7 @@ function ToolbarDivider() {
   return <div className="w-px h-6 bg-gray-300 mx-1" />;
 }
 
-export function EditorToolbar({ editor }: EditorToolbarProps) {
+export function EditorToolbar({ editor, onToggleViewMode }: EditorToolbarProps) {
   if (!editor) {
     return null;
   }
@@ -64,7 +66,7 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
   };
 
   return (
-    <div className="border-b border-gray-200 bg-white sticky top-0 z-10 px-4 py-2 flex items-center gap-1 flex-wrap">
+    <div className="border-b border-gray-200 bg-white sticky top-0 z-10 px-4 py-2 flex items-center gap-1 flex-wrap justify-between">
       {/* Headings */}
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
@@ -161,6 +163,21 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
       >
         <Code2 className="w-4 h-4" />
       </ToolbarButton>
+
+      <div className="flex-1" />
+
+      {/* View mode toggle */}
+      {onToggleViewMode && (
+        <>
+          <ToolbarDivider />
+          <ToolbarButton
+            onClick={onToggleViewMode}
+            title="Switch to Raw Markdown (Cmd+Shift+M)"
+          >
+            <FileText className="w-4 h-4" />
+          </ToolbarButton>
+        </>
+      )}
     </div>
   );
 }

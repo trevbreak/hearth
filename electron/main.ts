@@ -6,6 +6,15 @@ import { FileService } from './services/FileService';
 import { ConfigManager } from './services/ConfigManager';
 import { ProjectManager } from './services/ProjectManager';
 
+// Suppress EGL errors on macOS
+if (process.platform === 'darwin') {
+  app.commandLine.appendSwitch('disable-gpu-sandbox');
+  app.commandLine.appendSwitch('disable-software-rasterizer');
+}
+
+// Disable GPU hardware acceleration warnings (optional - comment out if you need GPU acceleration)
+// app.disableHardwareAcceleration();
+
 // Services (singleton instances)
 let fileService: FileService;
 let configManager: ConfigManager;

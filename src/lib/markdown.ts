@@ -1,5 +1,6 @@
 import { marked } from 'marked';
 import TurndownService from 'turndown';
+import { gfm } from 'turndown-plugin-gfm';
 import DOMPurify from 'dompurify';
 
 // Configure marked options
@@ -15,7 +16,10 @@ const turndownService = new TurndownService({
   bulletListMarker: '-',
 });
 
-// Custom rules for task lists
+// Use GFM plugin for tables, strikethrough, etc.
+turndownService.use(gfm);
+
+// Custom rules for task lists (TipTap specific)
 turndownService.addRule('taskListItems', {
   filter: (node: HTMLElement) => {
     return (
@@ -29,14 +33,6 @@ turndownService.addRule('taskListItems', {
     const isChecked = checkbox?.checked;
     const prefix = isChecked ? '- [x] ' : '- [ ] ';
     return prefix + content.trim() + '\n';
-  },
-});
-
-// Custom rule for tables
-turndownService.addRule('tables', {
-  filter: ['table'],
-  replacement: (content: string) => {
-    return '\n' + content + '\n';
   },
 });
 

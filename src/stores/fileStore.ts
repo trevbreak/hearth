@@ -89,13 +89,12 @@ export const useFileStore = create<FileStore>((set, get) => ({
       console.log('[FileStore] Saving file:', path);
       await window.api.writeFile(path, content);
 
-      // Update current file if it's the same
+      // Update frontmatter only - content stays as HTML in the editor
       const { currentFile } = get();
       if (currentFile && currentFile.path === path) {
         set({
           currentFile: {
             ...currentFile,
-            content,
             frontmatter,
           },
         });

@@ -80,6 +80,11 @@ When a feature/phase is fully implemented:
 
 3. **Update plan/README.md** to mark phase as complete
 
+4. **Update README files:**
+   - Update `/plan/README.md` with current phase status
+   - Update `/change/README.md` with completed phase
+   - Update root `README.md` with latest progress and features
+
 ### 2. Changelog Management
 
 #### Structure
