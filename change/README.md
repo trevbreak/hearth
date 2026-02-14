@@ -12,6 +12,7 @@ When a phase or major feature is completed:
 ## Completed Phases
 
 ### ✅ Phase 1: Project Scaffold
+
 **Status:** Complete
 **Completion Date:** February 13, 2024
 **File:** [phase-1.md](phase-1.md)
@@ -19,21 +20,31 @@ When a phase or major feature is completed:
 Basic Electron app setup with file management and project creation.
 
 ### ✅ Phase 2: Core Features Implementation
+
 **Status:** Complete
 **Completion Date:** February 14, 2026
 **File:** [phase-2.md](phase-2.md)
 
 TipTap WYSIWYG editor, markdown conversion, file tree interaction, auto-save functionality, and file operations.
 
+### ✅ Phase 3: AI Agent Integration
+
+**Status:** Complete
+**Completion Date:** February 14, 2026
+**File:** [phase-3.md](phase-3.md)
+
+AI assistant chat with Claude and OpenAI providers, streaming responses, PM quick actions, and multi-provider settings UI.
+
 ---
 
 ## Upcoming
 
-### Phase 3: LLM Integration
-**Status:** Next Up
-**Plan:** [../plan/phase-3.md](../plan/phase-3.md)
+### Phase 4: Organization Agent
 
-AI-powered chat interface and document generation.
+**Status:** Next Up
+**Plan:** [../plan/phase-4.md](../plan/phase-4.md)
+
+Auto-organize files, multi-agent workflows, and project structure recommendations.
 
 ---
 

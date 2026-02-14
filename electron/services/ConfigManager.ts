@@ -20,6 +20,21 @@ export interface AppConfig {
     enabled: boolean;
     autoOrganize: boolean;
   };
+  agents?: {
+    defaultProvider: 'claude' | 'openai';
+    claude?: {
+      apiKey: string;
+      model: string;
+      maxTokens?: number;
+      temperature?: number;
+    };
+    openai?: {
+      apiKey: string;
+      model: string;
+      maxTokens?: number;
+      temperature?: number;
+    };
+  };
 }
 
 const DEFAULT_CONFIG: AppConfig = {
