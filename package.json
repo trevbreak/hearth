@@ -1,0 +1,54 @@
+{
+  "name": "herth",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Product Manager Workspace with AI assistance",
+  "main": "out/main/index.js",
+  "author": "Trev",
+  "license": "MIT",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "lint": "eslint src electron --ext .ts,.tsx",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "electron",
+    "product-management",
+    "ai",
+    "markdown"
+  ],
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.74.0",
+    "@tiptap/extension-placeholder": "^3.19.0",
+    "@tiptap/extension-typography": "^3.19.0",
+    "@tiptap/react": "^3.19.0",
+    "@tiptap/starter-kit": "^3.19.0",
+    "chokidar": "^5.0.0",
+    "electron": "^40.4.1",
+    "gray-matter": "^4.0.3",
+    "lucide-react": "^0.564.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "uuid": "^13.0.0",
+    "zustand": "^5.0.11"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
+    "@types/node": "^25.2.3",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@types/uuid": "^10.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.55.0",
+    "@typescript-eslint/parser": "^8.55.0",
+    "@vitejs/plugin-react": "^5.1.4",
+    "autoprefixer": "^10.4.24",
+    "electron-vite": "^5.0.0",
+    "eslint": "^9.39.2",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.18",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1"
+  }
+}
