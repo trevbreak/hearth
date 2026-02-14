@@ -1,19 +1,18 @@
 {
   "name": "herth",
   "version": "0.1.0",
-  "type": "module",
   "description": "Product Manager Workspace with AI assistance",
-  "main": "out/main/main.cjs",
+  "main": "out/main/main.js",
   "author": "Trev",
   "license": "MIT",
   "scripts": {
-    "dev": "npm run build && electron .",
+    "dev": "npm run build && ./node_modules/.bin/electron .",
     "dev:watch": "electron-vite build --watch",
     "build": "electron-vite build",
     "preview": "electron-vite preview",
     "lint": "eslint src electron --ext .ts,.tsx",
     "typecheck": "tsc --noEmit",
-    "start": "electron ."
+    "start": "./node_modules/.bin/electron ."
   },
   "keywords": [
     "electron",
