@@ -24,6 +24,11 @@ const api = {
   getConfig: () => ipcRenderer.invoke('config:get'),
   updateConfig: (config: any) => ipcRenderer.invoke('config:update', config),
 
+  // LLM operations
+  summarizeFolder: (folderPath: string) => ipcRenderer.invoke('llm:summarize-folder', folderPath),
+  testLLMConnection: () => ipcRenderer.invoke('llm:test-connection'),
+  invalidateFolderCache: (folderPath?: string) => ipcRenderer.invoke('llm:invalidate-cache', folderPath),
+
   // Event listeners
   onFileChanged: (callback: (path: string) => void) => {
     ipcRenderer.on('file:changed', (_, path) => callback(path));

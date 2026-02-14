@@ -1,16 +1,32 @@
 import { useEffect, useState } from 'react';
 import { useFileStore } from '@/stores/fileStore';
+import { DirectoryEntry } from '@/types/file';
 import { Folder, File, Plus, FileText, FolderPlus } from 'lucide-react';
 
 export function FileTree() {
-  const { projects, currentProject, fileTree, selectedFile, loadProjects, selectProject, createProject, openFile, refreshFileTree } =
-    useFileStore();
+  const {
+    projects,
+    currentProject,
+    fileTree,
+    selectedFile,
+    selectedFolder,
+    loadProjects,
+    selectProject,
+    createProject,
+    openFile,
+    refreshFileTree,
+    selectFolder,
+    clearFolderSelection,
+    moveFile
+  } = useFileStore();
   const [showNewProject, setShowNewProject] = useState(false);
   const [projectName, setProjectName] = useState('');
   const [showNewFile, setShowNewFile] = useState(false);
   const [newFileName, setNewFileName] = useState('');
   const [showNewFolder, setShowNewFolder] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
+  const [draggedFile, setDraggedFile] = useState<DirectoryEntry | null>(null);
+  const [dropTarget, setDropTarget] = useState<string | null>(null);
 
   useEffect(() => {
     loadProjects();
@@ -67,6 +83,61 @@ export function FileTree() {
       console.error('[FileTree] Error creating folder:', error);
       alert(`Failed to create folder: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
+  };
+
+  // Drag and drop handlers
+  const handleDragStart = (entry: DirectoryEntry, e: React.DragEvent) => {
+    if (entry.isDirectory) {
+      e.preventDefault(); // Don't allow dragging folders
+      return;
+    }
+    setDraggedFile(entry);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (entry: DirectoryEntry, e: React.DragEvent) => {
+    if (!draggedFile || !entry.isDirectory) return;
+    if (draggedFile.path === entry.path) return; // Can't drop on self
+
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDragEnter = (entry: DirectoryEntry) => {
+    if (!draggedFile || !entry.isDirectory) return;
+    if (draggedFile.path === entry.path) return;
+
+    setDropTarget(entry.path);
+  };
+
+  const handleDragLeave = () => {
+    setDropTarget(null);
+  };
+
+  const handleDrop = async (targetEntry: DirectoryEntry, e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!draggedFile || !targetEntry.isDirectory) return;
+    if (draggedFile.path === targetEntry.path) return;
+
+    try {
+      const fileName = draggedFile.name;
+      const newPath = `${targetEntry.path}/${fileName}`;
+
+      await moveFile(draggedFile.path, newPath);
+    } catch (error) {
+      console.error('[FileTree] Failed to move file:', error);
+      alert(`Failed to move file: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      setDraggedFile(null);
+      setDropTarget(null);
+    }
+  };
+
+  const handleDragEnd = () => {
+    setDraggedFile(null);
+    setDropTarget(null);
   };
 
   return (
@@ -184,16 +255,30 @@ export function FileTree() {
               {fileTree.map((entry) => (
                 <div
                   key={entry.path}
+                  draggable={!entry.isDirectory}
+                  onDragStart={(e) => handleDragStart(entry, e)}
+                  onDragOver={(e) => handleDragOver(entry, e)}
+                  onDragEnter={() => handleDragEnter(entry)}
+                  onDragLeave={handleDragLeave}
+                  onDrop={(e) => handleDrop(entry, e)}
+                  onDragEnd={handleDragEnd}
                   onClick={() => {
-                    if (!entry.isDirectory) {
+                    if (entry.isDirectory) {
+                      selectFolder(entry.path);
+                    } else {
+                      clearFolderSelection();
                       openFile(entry.path);
                     }
                   }}
-                  className={`flex items-center gap-2 px-2 py-1.5 text-sm rounded cursor-pointer ${
+                  className={`flex items-center gap-2 px-2 py-1.5 text-sm rounded cursor-pointer transition-colors ${
                     selectedFile === entry.path
                       ? 'bg-primary-50 text-primary-700'
+                      : selectedFolder === entry.path
+                      ? 'bg-indigo-50 text-indigo-700'
+                      : dropTarget === entry.path
+                      ? 'bg-primary-100 border-2 border-primary-400'
                       : 'text-gray-700 hover:bg-gray-100'
-                  }`}
+                  } ${draggedFile?.path === entry.path ? 'opacity-50' : ''}`}
                 >
                   {entry.isDirectory ? (
                     <Folder className="w-4 h-4 text-gray-400" />

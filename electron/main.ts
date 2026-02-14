@@ -2,9 +2,11 @@ import { app, BrowserWindow } from 'electron';
 import { join } from 'path';
 import { registerFileHandlers } from './ipc/fileHandlers';
 import { registerConfigHandlers } from './ipc/configHandlers';
+import { registerLLMHandlers } from './ipc/llmHandlers';
 import { FileService } from './services/FileService';
 import { ConfigManager } from './services/ConfigManager';
 import { ProjectManager } from './services/ProjectManager';
+import { LLMService } from './services/LLMService';
 
 // Suppress EGL errors on macOS
 if (process.platform === 'darwin') {
@@ -19,6 +21,7 @@ if (process.platform === 'darwin') {
 let fileService: FileService;
 let configManager: ConfigManager;
 let projectManager: ProjectManager;
+let llmService: LLMService;
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -53,10 +56,12 @@ async function initializeApp() {
 
   fileService = new FileService(configManager);
   projectManager = new ProjectManager(fileService, configManager);
+  llmService = new LLMService(configManager, fileService);
 
   // Register IPC handlers
   registerFileHandlers(fileService, projectManager);
   registerConfigHandlers(configManager);
+  registerLLMHandlers(llmService);
 
   // Create window
   createWindow();

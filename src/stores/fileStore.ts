@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { Project, DirectoryEntry, FileContent } from '@/types/file';
+import { FolderSummaryResponse } from '@/types/llm';
 import { loadMarkdownFile } from '@/lib/markdown';
 
 interface FileStore {
@@ -10,6 +11,10 @@ interface FileStore {
   selectedFile: string | null;
   currentFile: FileContent | null;
   isFileLoading: boolean;
+  selectedFolder: string | null;
+  folderContents: DirectoryEntry[] | null;
+  folderSummary: FolderSummaryResponse | null;
+  isFolderSummaryLoading: boolean;
 
   // Actions
   loadProjects: () => Promise<void>;
@@ -19,6 +24,9 @@ interface FileStore {
   openFile: (path: string) => Promise<void>;
   saveFile: (path: string, content: string, frontmatter?: string | null) => Promise<void>;
   refreshFileTree: () => Promise<void>;
+  selectFolder: (folderPath: string) => Promise<void>;
+  clearFolderSelection: () => void;
+  moveFile: (oldPath: string, newPath: string) => Promise<void>;
 }
 
 export const useFileStore = create<FileStore>((set, get) => ({
@@ -28,6 +36,10 @@ export const useFileStore = create<FileStore>((set, get) => ({
   selectedFile: null,
   currentFile: null,
   isFileLoading: false,
+  selectedFolder: null,
+  folderContents: null,
+  folderSummary: null,
+  isFolderSummaryLoading: false,
 
   loadProjects: async () => {
     const projects = await window.api.getProjects();
@@ -113,5 +125,76 @@ export const useFileStore = create<FileStore>((set, get) => ({
 
     const files = await window.api.readDir(currentProject.path);
     set({ fileTree: files });
+  },
+
+  selectFolder: async (folderPath) => {
+    try {
+      console.log('[FileStore] Selecting folder:', folderPath);
+      set({
+        selectedFolder: folderPath,
+        selectedFile: null, // Deselect file
+        currentFile: null, // Clear file content
+        isFolderSummaryLoading: true,
+        folderSummary: null
+      });
+
+      // Read folder contents
+      const contents = await window.api.readDir(folderPath);
+      set({ folderContents: contents });
+
+      // Generate summary
+      const summary = await window.api.summarizeFolder(folderPath);
+      set({
+        folderSummary: summary,
+        isFolderSummaryLoading: false
+      });
+
+      console.log('[FileStore] Folder selected successfully');
+    } catch (error) {
+      console.error('[FileStore] Failed to load folder:', error);
+      set({
+        isFolderSummaryLoading: false,
+        folderSummary: null
+      });
+      throw error;
+    }
+  },
+
+  clearFolderSelection: () => {
+    set({
+      selectedFolder: null,
+      folderContents: null,
+      folderSummary: null
+    });
+  },
+
+  moveFile: async (oldPath, newPath) => {
+    try {
+      console.log('[FileStore] Moving file:', oldPath, '->', newPath);
+      await window.api.renameFile(oldPath, newPath);
+
+      const { selectedFile, currentFile } = get();
+
+      // Update selected file if it was moved
+      if (selectedFile === oldPath) {
+        set({ selectedFile: newPath });
+      }
+
+      // Update current file if it was moved
+      if (currentFile && currentFile.path === oldPath) {
+        set({
+          currentFile: {
+            ...currentFile,
+            path: newPath
+          }
+        });
+      }
+
+      await get().refreshFileTree();
+      console.log('[FileStore] File moved successfully');
+    } catch (error) {
+      console.error('[FileStore] Failed to move file:', error);
+      throw error;
+    }
   }
 }));

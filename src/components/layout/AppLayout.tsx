@@ -1,14 +1,16 @@
 import { FileTree } from '@/components/sidebar/FileTree';
 import { MarkdownEditor } from '@/components/editor/MarkdownEditor';
 import { AgentPanel } from '@/components/agent/AgentPanel';
+import { SettingsButton } from '@/components/settings/SettingsButton';
 
 export function AppLayout() {
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Left Sidebar - File Tree */}
       <aside className="w-64 bg-white border-r border-gray-200 flex flex-col">
-        <div className="h-12 border-b border-gray-200 flex items-center pl-20 pr-4">
+        <div className="h-12 border-b border-gray-200 flex items-center justify-between pl-20 pr-4">
           <h1 className="text-lg font-semibold text-gray-900">Herth</h1>
+          <SettingsButton />
         </div>
         <FileTree />
       </aside>

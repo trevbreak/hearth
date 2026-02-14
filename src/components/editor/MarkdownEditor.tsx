@@ -3,13 +3,14 @@ import { FileText } from 'lucide-react';
 import { useFileStore } from '@/stores/fileStore';
 import { TipTapEditor } from './TipTapEditor';
 import { SaveStatus } from './SaveStatus';
+import { FolderView } from '@/components/folder/FolderView';
 import { saveMarkdownFile, htmlToMarkdown } from '@/lib/markdown';
 import { useAutoSave } from '@/hooks/useAutoSave';
 
 type ViewMode = 'wysiwyg' | 'markdown';
 
 export function MarkdownEditor() {
-  const { currentFile, isFileLoading, currentProject, saveFile } = useFileStore();
+  const { currentFile, isFileLoading, currentProject, selectedFolder, saveFile } = useFileStore();
   const [editorContent, setEditorContent] = useState('');
   const [hasChanges, setHasChanges] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>('wysiwyg');
@@ -67,6 +68,11 @@ export function MarkdownEditor() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [forceSave]);
+
+  // Folder view mode
+  if (selectedFolder) {
+    return <FolderView />;
+  }
 
   // No project selected
   if (!currentProject) {
