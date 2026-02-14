@@ -3,15 +3,17 @@
   "version": "0.1.0",
   "type": "module",
   "description": "Product Manager Workspace with AI assistance",
-  "main": "out/main/index.js",
+  "main": "out/main/main.cjs",
   "author": "Trev",
   "license": "MIT",
   "scripts": {
-    "dev": "electron-vite dev",
+    "dev": "npm run build && electron .",
+    "dev:watch": "electron-vite build --watch",
     "build": "electron-vite build",
     "preview": "electron-vite preview",
     "lint": "eslint src electron --ext .ts,.tsx",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "start": "electron ."
   },
   "keywords": [
     "electron",
