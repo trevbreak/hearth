@@ -1,0 +1,168 @@
+# Herth Implementation Plan
+
+This directory contains detailed implementation plans for each development phase of Herth.
+
+## Overview
+
+Herth is being developed in 6 phases, from basic scaffolding to a full-featured PM workspace with AI assistance, integrations, and automation.
+
+## Phases
+
+### ✅ [Phase 1: Project Scaffold](../change/phase-1.md) (COMPLETE)
+**Status:** Complete
+**Duration:** 1-2 weeks
+
+Basic Electron app setup with file management and project structure.
+
+**Key Deliverables:**
+- Electron + React + TypeScript app
+- File and directory operations
+- Project creation with standard folders
+- IPC communication layer
+- 3-panel UI layout
+
+---
+
+### ✅ [Phase 2: Core Features](../change/phase-2.md) (COMPLETE)
+**Status:** Complete
+**Duration:** 1 day
+**Dependencies:** Phase 1
+
+Implemented core editing and file management features.
+
+**Key Deliverables:**
+- ✅ TipTap WYSIWYG markdown editor
+- ✅ File tree interaction (click to open)
+- ✅ Auto-save functionality
+- ✅ File operations (create files and folders)
+- ✅ Keyboard shortcuts (Cmd/Ctrl+S)
+
+**[→ View Changelog](../change/phase-2.md)**
+
+---
+
+### 🚧 [Phase 3: LLM Integration](phase-3.md) (NEXT)
+**Status:** Next Up
+**Duration:** 2-3 weeks
+**Dependencies:** Phase 2
+
+Add AI capabilities with pluggable LLM providers.
+
+**Key Deliverables:**
+- Support for Anthropic, OpenAI, Ollama
+- Chat interface in AI Assistant panel
+- Context-aware prompts for PM tasks
+- Settings UI for API configuration
+- Streaming responses
+
+**[→ View Detailed Plan](phase-3.md)**
+
+---
+
+### 📋 [Phase 4: Organization Agent](phase-4.md)
+**Status:** Planned
+**Duration:** 3-4 weeks
+**Dependencies:** Phase 3
+
+Build intelligent agent for file organization and insights.
+
+**Key Deliverables:**
+- Auto-organize files into correct folders
+- Suggest naming conventions
+- Generate insights from content
+- Detect missing documentation
+- Project structure recommendations
+- Auto-tagging and categorization
+
+**[→ View Detailed Plan](phase-4.md)**
+
+---
+
+### 📋 [Phase 5: Context & Templates](phase-5.md)
+**Status:** Planned
+**Duration:** 2-3 weeks
+**Dependencies:** Phase 4
+
+Personalize workspace with context and templates.
+
+**Key Deliverables:**
+- User and company context management
+- Persona system
+- Comprehensive template library
+- Custom template creation
+- Context-aware document generation
+- Template variables and placeholders
+
+**[→ View Detailed Plan](phase-5.md)**
+
+---
+
+### 📋 [Phase 6: Analysis & Automation](phase-6.md)
+**Status:** Planned
+**Duration:** 4-5 weeks
+**Dependencies:** Phase 5
+
+Advanced analysis, integrations, and workflow automation.
+
+**Key Deliverables:**
+- PRD analysis and feedback system
+- Jira/Linear/GitHub integration
+- Meeting transcript processing
+- Marketing material generation
+- Roadmap visualization
+- Full-text search and insights
+- Workflow automation engine
+
+**[→ View Detailed Plan](phase-6.md)**
+
+---
+
+## Total Timeline
+
+**Estimated Total:** 16-21 weeks (4-5 months)
+
+```
+Phase 1: ████████ (Complete)
+Phase 2: ████████ (Complete)
+Phase 3: ░░░░░░░░ (2-3 weeks)
+Phase 4: ░░░░░░░░░ (3-4 weeks)
+Phase 5: ░░░░░░░░ (2-3 weeks)
+Phase 6: ░░░░░░░░░░ (4-5 weeks)
+```
+
+## Current Status
+
+**Current Phase:** Phase 3 (LLM Integration)
+**Next Milestone:** AI chat interface
+**Overall Progress:** ~30% complete
+
+## How to Use These Plans
+
+Each phase document contains:
+- **Overview** - Goals and context
+- **Detailed Tasks** - Step-by-step implementation guide
+- **File Structure** - New files and changes needed
+- **Code Examples** - Reference implementations
+- **Testing Checklist** - QA requirements
+- **Definition of Done** - Completion criteria
+
+## Contributing
+
+When implementing features:
+1. Read the phase plan thoroughly
+2. Check off tasks as you complete them
+3. Update the plan if you deviate or discover better approaches
+4. Document any architectural decisions
+5. Keep the README.md roadmap in sync
+
+## Notes
+
+- Plans are living documents - update as you learn
+- Some tasks may be reordered based on dependencies
+- Estimates are rough - adjust based on actual progress
+- Focus on Phase 2 first - later phases may evolve
+
+---
+
+**Last Updated:** February 14, 2026
+**Maintained By:** Trev

@@ -7,6 +7,10 @@ const api = {
   writeFile: (path: string, content: string, metadata?: any) =>
     ipcRenderer.invoke('file:write', path, content, metadata),
   deleteFile: (path: string) => ipcRenderer.invoke('file:delete', path),
+  renameFile: (oldPath: string, newPath: string) =>
+    ipcRenderer.invoke('file:rename', oldPath, newPath),
+  createFile: (path: string, content: string, metadata?: any) =>
+    ipcRenderer.invoke('file:create', path, content, metadata),
 
   // Directory operations
   readDir: (path: string) => ipcRenderer.invoke('dir:read', path),

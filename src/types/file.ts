@@ -26,3 +26,9 @@ export interface DirectoryEntry {
   isDirectory: boolean;
   path: string;
 }
+
+export interface FileContent {
+  path: string;
+  content: string;
+  frontmatter?: string | null;
+}

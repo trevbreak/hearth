@@ -7,7 +7,7 @@ export function AppLayout() {
     <div className="flex h-screen bg-gray-50">
       {/* Left Sidebar - File Tree */}
       <aside className="w-64 bg-white border-r border-gray-200 flex flex-col">
-        <div className="h-12 border-b border-gray-200 flex items-center px-4">
+        <div className="h-12 border-b border-gray-200 flex items-center pl-20 pr-4">
           <h1 className="text-lg font-semibold text-gray-900">Herth</h1>
         </div>
         <FileTree />

@@ -72,7 +72,43 @@ export class FileService {
 
   async deleteFile(filePath: string): Promise<void> {
     const absolutePath = this.resolveWorkspacePath(filePath);
-    await fs.unlink(absolutePath);
+    const stats = await fs.stat(absolutePath);
+
+    if (stats.isDirectory()) {
+      await fs.rm(absolutePath, { recursive: true, force: true });
+    } else {
+      await fs.unlink(absolutePath);
+    }
+  }
+
+  async renameFile(oldPath: string, newPath: string): Promise<void> {
+    const absoluteOldPath = this.resolveWorkspacePath(oldPath);
+    const absoluteNewPath = this.resolveWorkspacePath(newPath);
+
+    // Ensure target directory exists
+    await fs.mkdir(dirname(absoluteNewPath), { recursive: true });
+
+    await fs.rename(absoluteOldPath, absoluteNewPath);
+  }
+
+  async createFile(filePath: string, content: string = '', metadata?: FileMetadata): Promise<void> {
+    const absolutePath = this.resolveWorkspacePath(filePath);
+
+    // Ensure directory exists
+    await fs.mkdir(dirname(absolutePath), { recursive: true });
+
+    // Add frontmatter for markdown files
+    let finalContent = content;
+    if (filePath.endsWith('.md')) {
+      const fileMetadata: FileMetadata = {
+        ...metadata,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      finalContent = matter.stringify(content, fileMetadata);
+    }
+
+    await fs.writeFile(absolutePath, finalContent, 'utf-8');
   }
 
   async readDir(dirPath: string): Promise<DirectoryEntry[]> {

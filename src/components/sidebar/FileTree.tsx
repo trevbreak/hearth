@@ -1,12 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useFileStore } from '@/stores/fileStore';
-import { Folder, File, Plus } from 'lucide-react';
+import { Folder, File, Plus, FileText, FolderPlus } from 'lucide-react';
 
 export function FileTree() {
-  const { projects, currentProject, fileTree, loadProjects, selectProject, createProject } =
+  const { projects, currentProject, fileTree, selectedFile, loadProjects, selectProject, createProject, openFile, refreshFileTree } =
     useFileStore();
   const [showNewProject, setShowNewProject] = useState(false);
   const [projectName, setProjectName] = useState('');
+  const [showNewFile, setShowNewFile] = useState(false);
+  const [newFileName, setNewFileName] = useState('');
+  const [showNewFolder, setShowNewFolder] = useState(false);
+  const [newFolderName, setNewFolderName] = useState('');
 
   useEffect(() => {
     loadProjects();
@@ -16,9 +20,53 @@ export function FileTree() {
     e.preventDefault();
     if (!projectName.trim()) return;
 
-    await createProject(projectName);
-    setProjectName('');
-    setShowNewProject(false);
+    try {
+      await createProject(projectName);
+      setProjectName('');
+      setShowNewProject(false);
+    } catch (error) {
+      console.error('[FileTree] Error creating project:', error);
+      alert(`Failed to create project: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
+  const handleCreateFile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newFileName.trim() || !currentProject) return;
+
+    try {
+      const fileName = newFileName.endsWith('.md') ? newFileName : `${newFileName}.md`;
+      const filePath = `${currentProject.path}/${fileName}`;
+
+      await window.api.createFile(filePath, '# New Document\n\nStart writing here...');
+      await refreshFileTree();
+
+      setNewFileName('');
+      setShowNewFile(false);
+
+      // Open the newly created file
+      openFile(filePath);
+    } catch (error) {
+      console.error('[FileTree] Error creating file:', error);
+      alert(`Failed to create file: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
+  const handleCreateFolder = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newFolderName.trim() || !currentProject) return;
+
+    try {
+      const folderPath = `${currentProject.path}/${newFolderName}`;
+      await window.api.createDir(folderPath);
+      await refreshFileTree();
+
+      setNewFolderName('');
+      setShowNewFolder(false);
+    } catch (error) {
+      console.error('[FileTree] Error creating folder:', error);
+      alert(`Failed to create folder: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
   };
 
   return (
@@ -77,15 +125,75 @@ export function FileTree() {
       {/* File Tree */}
       {currentProject && (
         <div>
-          <h3 className="text-xs font-semibold text-gray-500 uppercase mb-2">Files</h3>
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-xs font-semibold text-gray-500 uppercase">Files</h3>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => setShowNewFile(true)}
+                className="p-1 hover:bg-gray-100 rounded"
+                title="New File"
+              >
+                <FileText className="w-4 h-4 text-gray-600" />
+              </button>
+              <button
+                onClick={() => setShowNewFolder(true)}
+                className="p-1 hover:bg-gray-100 rounded"
+                title="New Folder"
+              >
+                <FolderPlus className="w-4 h-4 text-gray-600" />
+              </button>
+            </div>
+          </div>
+
+          {showNewFile && (
+            <form onSubmit={handleCreateFile} className="mb-2">
+              <input
+                type="text"
+                value={newFileName}
+                onChange={(e) => setNewFileName(e.target.value)}
+                placeholder="File name..."
+                className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+                autoFocus
+                onBlur={() => {
+                  if (!newFileName.trim()) setShowNewFile(false);
+                }}
+              />
+            </form>
+          )}
+
+          {showNewFolder && (
+            <form onSubmit={handleCreateFolder} className="mb-2">
+              <input
+                type="text"
+                value={newFolderName}
+                onChange={(e) => setNewFolderName(e.target.value)}
+                placeholder="Folder name..."
+                className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+                autoFocus
+                onBlur={() => {
+                  if (!newFolderName.trim()) setShowNewFolder(false);
+                }}
+              />
+            </form>
+          )}
+
           {fileTree.length === 0 ? (
-            <p className="text-sm text-gray-400 italic">No files</p>
+            <p className="text-sm text-gray-400 italic">No files yet. Create a new file to get started.</p>
           ) : (
             <div className="space-y-1">
               {fileTree.map((entry) => (
                 <div
                   key={entry.path}
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 rounded cursor-pointer"
+                  onClick={() => {
+                    if (!entry.isDirectory) {
+                      openFile(entry.path);
+                    }
+                  }}
+                  className={`flex items-center gap-2 px-2 py-1.5 text-sm rounded cursor-pointer ${
+                    selectedFile === entry.path
+                      ? 'bg-primary-50 text-primary-700'
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
                 >
                   {entry.isDirectory ? (
                     <Folder className="w-4 h-4 text-gray-400" />
