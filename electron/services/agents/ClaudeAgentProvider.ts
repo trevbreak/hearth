@@ -40,13 +40,13 @@ function buildSystemPrompt(context: AgentContext): string {
 export class ClaudeAgentProvider implements AgentProvider {
   name = 'claude' as const;
   private client: Anthropic | null = null;
-  private model = 'claude-sonnet-4-5-20250514';
+  private model = 'claude-sonnet-4-5-20250929';
   private maxTokens = 4096;
   private temperature = 0.7;
 
   initialize(config: AgentConfig): void {
     this.client = new Anthropic({ apiKey: config.apiKey });
-    this.model = config.model || 'claude-sonnet-4-5-20250514';
+    this.model = config.model || 'claude-sonnet-4-5-20250929';
     this.maxTokens = config.maxTokens || 4096;
     this.temperature = config.temperature ?? 0.7;
     console.log('[ClaudeAgent] Initialized with model:', this.model);

@@ -18,7 +18,7 @@ export class AgentService {
       const provider = new ClaudeAgentProvider();
       provider.initialize({
         apiKey: agentsConfig.claude.apiKey,
-        model: agentsConfig.claude.model || 'claude-sonnet-4-5-20250514',
+        model: agentsConfig.claude.model || 'claude-sonnet-4-5-20250929',
         maxTokens: agentsConfig.claude.maxTokens,
         temperature: agentsConfig.claude.temperature,
       });
